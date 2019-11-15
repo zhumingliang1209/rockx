@@ -77,10 +77,6 @@ int main(int argc, char** argv) {
 
     /*************** FACE Landmark ***************/
     rockx_image_t out_img;
-    out_img.width = 112;
-    out_img.height = 112;
-    out_img.pixel_format = ROCKX_PIXEL_FORMAT_RGB888;
-    out_img.data = (uint8_t*)malloc(112*112*3*sizeof(char));
     /*************** FACE Gender Age***************/
     rockx_face_attribute_t gender_age;
     memset(&gender_age, 0, sizeof(rockx_face_attribute_t));
@@ -88,8 +84,12 @@ int main(int argc, char** argv) {
         rockx_face_align(face_5landmarks_handle, &input_image, &face_array.object[i].box, nullptr, &out_img);
         ret = rockx_face_attribute(face_attribute_handle, &out_img, &gender_age);
         printf("faceid: %d\tgender: %d\tage: %d\n", i, gender_age.gender, gender_age.age);
+        rockx_image_release(&out_img);
     }
-    free(out_img.data);
+
+    rockx_image_release(&input_image);
+
+    // release handle
     rockx_destroy(face_attribute_handle);
     rockx_destroy(face_det_handle);
     rockx_destroy(face_5landmarks_handle);

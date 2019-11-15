@@ -13,7 +13,7 @@
 #ifndef _TENSOR_UTIL_H
 #define _TENSOR_UTIL_H
 
-#include "rockx_type.h"
+#include "../rockx_type.h"
 
 #ifdef __cplusplus
 extern "C" {

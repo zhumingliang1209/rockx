@@ -23,6 +23,7 @@
 #include "modules/object_track.h"
 #include "utils/rockx_tensor_util.h"
 #include "utils/rockx_image_util.h"
+#include "utils/rockx_config_util.h"
 
 /**
  * @mainpage Index Page
@@ -124,14 +125,15 @@ typedef enum {
     ROCKX_MODULE_CARPLATE_DETECTION  = 10,   ///< Car Plate Detection
     ROCKX_MODULE_CARPLATE_ALIGN      = 11,   ///< Car Plate Correct Alignment
     ROCKX_MODULE_CARPLATE_RECOG      = 12,   ///< Car Plate Recognition
-    ROCKX_MODULE_OBJECT_TRACK        = 13,    ///< Object Track
-    ROCKX_MODULE_POSE_FINGER_3       = 14    ///< Finger Landmark(3 KeyPoint)
+    ROCKX_MODULE_OBJECT_TRACK        = 13,   ///< Object Track
+    ROCKX_MODULE_POSE_FINGER_3       = 14,   ///< Finger Landmark(3 KeyPoint)
+    ROCKX_MODULE_FACE_LIVENESS       = 15    ///< 2D Liveness
 } rockx_module_t;
 
 /// Create A Rockx Module
 /// \param handle [out] The handle for created module
 /// \param m [in] Enum of RockX module(@ref rockx_module_t)
-/// \param config [in] Config for Rockx Module
+/// \param config [in] Config for Rockx Module(@ref rockx_config_t)
 /// \param config_size [in] Size of config
 /// \return @ref rockx_ret_t
 rockx_ret_t rockx_create(rockx_handle_t *handle, rockx_module_t m, void *config, size_t config_size);

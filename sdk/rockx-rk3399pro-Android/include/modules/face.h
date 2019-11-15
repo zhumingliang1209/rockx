@@ -14,7 +14,7 @@
 #define _ROCKX_FACE_H
 
 #include <stddef.h>
-#include "rockx_type.h"
+#include "../rockx_type.h"
 #include "object_detection.h"
 
 #ifdef __cplusplus
@@ -62,10 +62,10 @@ typedef struct rockx_face_attribute_t {
 /**
  * @brief Face Antispoof Result
  */
-typedef struct rockx_face_antispoof_t {
+typedef struct rockx_face_liveness_t {
     float fake_score;   ///< score of fake
     float real_score;   ///< score of real
-} rockx_face_antispoof_t;
+} rockx_face_liveness_t;
 
 /**
  * Face Detection
@@ -123,7 +123,7 @@ rockx_ret_t rockx_face_align(rockx_handle_t handle, rockx_image_t *in_img, rockx
 rockx_ret_t rockx_face_recognize(rockx_handle_t handle, rockx_image_t *in_img, rockx_face_feature_t *out_feature);
 
 /**
- * Compare Two Face Feature Similarity
+ * Compare Two Face Feature Similarity (Use Euclidean distance). Developers can adjust thresholds(0.1~1.3) based on different face data sets and application scenarios.
  * @param in_feature1 [in] Face 1 Feature
  * @param in_feature2 [in] Face 2 Feature
  * @param out_similarity [out] Similarity (more smaller more similar)
@@ -141,16 +141,13 @@ rockx_ret_t rockx_face_feature_similarity(rockx_face_feature_t *in_feature1, roc
 rockx_ret_t rockx_face_attribute(rockx_handle_t handle, rockx_image_t *in_img, rockx_face_attribute_t *attr);
 
 /**
- * Face 3D Anti Spoof
- * @param handle [in] Handle of a created ROCKX_MODULE_ANTISPOOF module(created by @ref rockx_create)
- * @param in_ir_img [in] Input IR image
- * @param in_depth_img [in] Input depth image
- * @param in_ir_face_landmark [in] Face detection result on ir image
- * @param out_result [out] Anti spoof result
+ * Face Liveness Detection
+ * @param handle [in] Handle of a created ROCKX_MODULE_FACE_LIVENESS module(created by @ref rockx_create)
+ * @param in_ir_img [in] Input IR aligned face image (need specified ir camera)
+ * @param out_liveness_result [out] Liveness result
  * @return @ref rockx_ret_t
  */
-//rockx_ret_t rockx_face_3d_antispoof(rockx_handle_t handle, rockx_image_t *in_ir_img, rockx_image_t* in_depth_img,
-//        rockx_face_landmark_t *in_ir_face_landmark, rockx_face_antispoof_t *out_result);
+rockx_ret_t rockx_face_liveness_detect(rockx_handle_t handle, rockx_image_t* in_ir_img, rockx_face_liveness_t *out_liveness_result);
 
 #ifdef __cplusplus
 } //extern "C"

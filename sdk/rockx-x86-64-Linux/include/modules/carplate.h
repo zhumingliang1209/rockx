@@ -13,7 +13,7 @@
 #ifndef _ROCKX_CARPLATE_H
 #define _ROCKX_CARPLATE_H
 
-#include "rockx_type.h"
+#include "../rockx_type.h"
 #include "object_detection.h"
 
 
@@ -22,15 +22,15 @@ extern "C" {
 #endif
 
 /**
-* @brief Car Plate Recognition Code Table
+ * @brief CarPlate Recognition Code Table
+ *
+ *     "京", "沪", "津", "渝", "冀", "晋", "蒙", "辽", "吉", "黑", "苏", "浙", "皖", "闽", "赣", "鲁", "豫", "鄂", "湘", \n
+ *     "粤", "桂", "琼", "川", "贵", "云", "藏", "陕", "甘", "青", "宁", "新", \n
+ *     "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", \n
+ *     "A", "B", "C", "D", "E", "F", "G", "H", "J", "K", "L", "M", "N", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", \n
+ *     "港", "学", "使", "警", "澳", "挂", "军", "北", "南", "广", "沈", "兰", "成", "济", "海", "民", "航", "空" \n
 */
-const char* const CARPLATE_RECOG_CODE[83] = {
-        "京", "沪", "津", "渝", "冀", "晋", "蒙", "辽", "吉", "黑", "苏", "浙", "皖", "闽", "赣", "鲁", "豫", "鄂", "湘",
-        "粤", "桂", "琼", "川", "贵", "云", "藏", "陕", "甘", "青", "宁", "新",
-        "0", "1", "2", "3", "4", "5", "6", "7", "8", "9",
-        "A", "B", "C", "D", "E", "F", "G", "H", "J", "K", "L", "M", "N", "P", "Q", "R", "S", "T", "U", "V", "W", "X",
-        "Y", "Z","港","学","使","警","澳","挂","军","北","南","广","沈","兰","成","济","海","民","航","空"
-};
+extern const char* const CARPLATE_RECOG_CODE[83];
 
 /**
  * @brief Car plate align Result (@ref rockx_carplate_align)
@@ -63,11 +63,11 @@ rockx_ret_t rockx_carplate_detect(rockx_handle_t handle, rockx_image_t *in_img, 
  * Car Plate Correction Alignment
  * @param handle [in] Handle of a created ROCKX_MODULE_CARPLATE_ALIGN module(created by @ref rockx_create)
  * @param in_img [in] Input image
- * @param detect_result [in] Detection result (get from @ref rockx_carplate_detect)
- * @param aligned_result [out] Aligned result
+ * @param detect_box [in] Carplat detection result box (get from @ref rockx_carplate_detect)
+ * @param aligned_result [out] Aligned result (remember to release aligned_image via rockx_image_release())
  * @return @ref rockx_ret_t
  */
-rockx_ret_t rockx_carplate_align(rockx_handle_t handle, rockx_image_t *in_img, rockx_object_t *detect_result,
+rockx_ret_t rockx_carplate_align(rockx_handle_t handle, rockx_image_t *in_img, rockx_rect_t *detect_box,
                                  rockx_carplate_align_result_t *aligned_result);
 
 /**

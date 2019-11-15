@@ -14,7 +14,7 @@
 #define _ROCKX_TYPE_H
 
 #include <stddef.h>
-#include <cstdint>
+#include <stdint.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -43,9 +43,20 @@ typedef enum {
  * @brief Image Pixel Format
  */
 typedef enum {
-    ROCKX_PIXEL_FORMAT_GRAY8 = 0,  ///< Gray8
-    ROCKX_PIXEL_FORMAT_RGB888,     ///< RGB888
-    ROCKX_PIXEL_FORMAT_BGR888      ///< BGR888
+    ROCKX_PIXEL_FORMAT_GRAY8 = 0,       ///< Gray8
+    ROCKX_PIXEL_FORMAT_RGB888,          ///< RGB888
+    ROCKX_PIXEL_FORMAT_BGR888,          ///< BGR888
+    ROCKX_PIXEL_FORMAT_RGBA8888,        ///< RGBA8888
+    ROCKX_PIXEL_FORMAT_BGRA8888,        ///< BGRA8888
+    ROCKX_PIXEL_FORMAT_YUV420P_YU12,    ///< YUV420P YU12: YYYYYYYYUUVV
+    ROCKX_PIXEL_FORMAT_YUV420P_YV12,    ///< YUV420P YV12: YYYYYYYYVVUU
+    ROCKX_PIXEL_FORMAT_YUV420SP_NV12,   ///< YUV420SP NV12: YYYYYYYYUVUV
+    ROCKX_PIXEL_FORMAT_YUV420SP_NV21,   ///< YUV420SP NV21: YYYYYYYYVUVU
+    ROCKX_PIXEL_FORMAT_YUV422P_YU16,    ///< YUV422P YU16: YYYYYYYYUUUUVVVV
+    ROCKX_PIXEL_FORMAT_YUV422P_YV16,    ///< YUV422P YV16: YYYYYYYYVVVVUUUU
+    ROCKX_PIXEL_FORMAT_YUV422SP_NV16,   ///< YUV422SP NV16: YYYYYYYYUVUVUVUV
+    ROCKX_PIXEL_FORMAT_YUV422SP_NV61,   ///< YUV422SP NV61: YYYYYYYYVUVUVUVU
+    ROCKX_PIXEL_FORMAT_MAX,
 } rockx_pixel_format;
 
 /**
@@ -121,9 +132,11 @@ typedef struct rockx_rectf_t {
  */
 typedef struct rockx_image_t {
     uint8_t *data;                      ///< Image data
+    uint32_t size;                      ///< Image data size
+    uint8_t is_prealloc_buf;            ///< Image data buffer prealloc
     rockx_pixel_format pixel_format;    ///< Image pixel format (@ref rockx_pixel_format)
-    int width;                          ///< Image Width
-    int height;                         ///< Image Height
+    uint32_t width;                     ///< Image Width
+    uint32_t height;                    ///< Image Height
 } rockx_image_t;
 
 /**

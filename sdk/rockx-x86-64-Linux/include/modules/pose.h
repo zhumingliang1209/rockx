@@ -13,7 +13,7 @@
 #ifndef _ROCKX_POSE_H
 #define _ROCKX_POSE_H
 
-#include "rockx_type.h"
+#include "../rockx_type.h"
 
 #ifdef __cplusplus
 extern "C" {

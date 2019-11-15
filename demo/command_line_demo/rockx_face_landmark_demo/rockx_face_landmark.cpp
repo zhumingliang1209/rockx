@@ -22,6 +22,11 @@ int main(int argc, char** argv) {
     struct timeval tv;
     rockx_module_t rockx_module;
 
+    if (argc < 3) {
+        printf("Use ./rockx_face_landmark xxx.jpg 5 or ./rockx_face_landmark xxx.jpg 68\n");
+        return -1;
+    }
+
     const char *img_path = argv[1];
     int landmark_count = atoi(argv[2]);
 
@@ -34,11 +39,6 @@ int main(int argc, char** argv) {
         return -1;
     }
 
-    // read image
-    rockx_image_t input_image;
-    rockx_image_read(img_path, &input_image, 1);
-
-    /*************** FACE Detect ***************/
     rockx_handle_t face_det_handle;
 
     // create a face detection handle
@@ -46,6 +46,20 @@ int main(int argc, char** argv) {
     if (ret != ROCKX_RET_SUCCESS) {
         printf("init rockx module ROCKX_MODULE_FACE_DETECTION error %d\n", ret);
     }
+
+    rockx_handle_t face_landmark_handle;
+
+    // create a face landmark handle
+    ret = rockx_create(&face_landmark_handle, rockx_module, nullptr, 0);
+    if (ret != ROCKX_RET_SUCCESS) {
+        printf("init rockx module ROCKX_MODULE_FACE_LANDMARK_68 error %d\n", ret);
+    }
+
+    // read image
+    rockx_image_t input_image;
+    rockx_image_read(img_path, &input_image, 1);
+
+    /*************** FACE Detect ***************/
 
     // create rockx_face_array_t for store result
     rockx_object_array_t face_array;
@@ -66,29 +80,9 @@ int main(int argc, char** argv) {
         int bottom = face_array.object[i].box.bottom;
         float score = face_array.object[i].score;
         printf("box=(%d %d %d %d) score=%f\n", left, top, right, bottom, score);
-        // draw
-        char score_str[8];
-        memset(score_str, 0, 8);
-        snprintf(score_str, 8, "%.3f", score);
     }
-
-    // release handle
-    rockx_destroy(face_det_handle);
 
     /*************** FACE Landmark ***************/
-    rockx_image_t out_img;
-    out_img.width = 112;
-    out_img.height = 112;
-    out_img.pixel_format = ROCKX_PIXEL_FORMAT_RGB888;
-    out_img.data = (uint8_t*)malloc(112*112*3*sizeof(char));
-
-    rockx_handle_t face_landmark_handle;
-
-    // create a face landmark handle
-    ret = rockx_create(&face_landmark_handle, rockx_module, nullptr, 0);
-    if (ret != ROCKX_RET_SUCCESS) {
-        printf("init rockx module ROCKX_MODULE_FACE_LANDMARK_68 error %d\n", ret);
-    }
 
     // detect landmark for every face
     for (int i = 0; i < face_array.count; i++) {
@@ -100,18 +94,11 @@ int main(int argc, char** argv) {
 
         ret = rockx_face_landmark(face_landmark_handle, &input_image, &face_array.object[i].box, &out_landmark);
 
-        rockx_face_pose(&out_landmark, &out_angle);
+        ret = rockx_face_pose(&out_landmark, &out_angle);
 
         printf("face %d:\n landmarks_count=%d angle=(pitch:%f yaw:%f roll:%f)\n", i,
                 out_landmark.landmarks_count,
-               out_angle.pitch, out_angle.yaw, out_angle.roll);
-
-        if (rockx_module == ROCKX_MODULE_FACE_LANDMARK_5) {
-            rockx_image_t align_face_img;
-            rockx_face_align(face_landmark_handle, &input_image, &face_array.object[i].box, &out_landmark, &align_face_img);
-            rockx_image_write("./aligned_face.jpg", &align_face_img);
-            rockx_image_release(&align_face_img);
-        }
+                out_angle.pitch, out_angle.yaw, out_angle.roll);
 
         for(int j = 0; j < out_landmark.landmarks_count; j++) {
             rockx_image_draw_circle(&input_image, {out_landmark.landmarks[j].x, out_landmark.landmarks[j].y}, 2, {0, 255, 0}, -1);
@@ -120,5 +107,8 @@ int main(int argc, char** argv) {
     rockx_image_write("./out_landmark.jpg", &input_image);
 
     rockx_image_release(&input_image);
+
+    // release handle
+    rockx_destroy(face_det_handle);
     rockx_destroy(face_landmark_handle);
 }

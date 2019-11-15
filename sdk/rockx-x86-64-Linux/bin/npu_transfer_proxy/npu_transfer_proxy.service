@@ -1,9 +1,0 @@
-[Unit]
-Description=NPU Transfer Proxy for Rockchip RK1808 AI Compute Stick
-
-[Service]
-Restart=always
-ExecStart=/usr/local/bin/npu_transfer_proxy
-
-[Install]
-WantedBy=default.target

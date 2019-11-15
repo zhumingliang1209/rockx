@@ -13,25 +13,28 @@
 #ifndef _ROCKX_OBJECT_DETECTION_H
 #define _ROCKX_OBJECT_DETECTION_H
 
-#include "rockx_type.h"
+#include "../rockx_type.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 /**
- * Object Detection Labels Table (91 Classes)
+ * @brief Object Detection Labels Table (91 Classes)
+ *
+ *    "???", "person", "bicycle", "car", "motorcycle", "airplane", "bus", "train", "truck", "boat", \n
+ *    "trafficlight", "firehydrant", "???", "stopsign", "parkingmeter", "bench", "bird", "cat", "dog", "horse", \n
+ *    "sheep", "cow", "elephant", "bear", "zebra", "giraffe", "???", "backpack", "umbrella", "???", \n
+ *    "???", "handbag", "tie", "suitcase", "frisbee", "skis", "snowboard", "sportsball", "kite", "baseballbat", \n
+ *    "baseballglove", "skateboard", "surfboard", "tennisracket", "bottle", "???", "wineglass", "cup", "fork", "knife", \n
+ *    "spoon", "bowl", "banana", "apple", "sandwich", "orange", "broccoli", "carrot", "hotdog", "pizza", \n
+ *    "donut", "cake", "chair", "couch", "pottedplant", "bed", "???", "diningtable", "???", "???", \n
+ *    "toilet", "???", "tv", "laptop", "mouse", "remote", "keyboard", "cellphone", "microwave", "oven", \n
+ *    "toaster", "sink", "refrigerator", "???", "book", "clock", "vase", "scissors", "teddybear", "hairdrier", \n
+ *    "toothbrush" \n
+ *
  */
-const char* const OBJECT_DETECTION_LABELS_91[91] = {
-        "???", "person", "bicycle", "car", "motorcycle", "airplane", "bus", "train", "truck", "boat", "trafficlight",
-        "firehydrant", "???", "stopsign", "parkingmeter", "bench", "bird", "cat", "dog", "horse", "sheep", "cow", "elephant",
-        "bear", "zebra", "giraffe", "???", "backpack", "umbrella", "???", "???", "handbag", "tie", "suitcase", "frisbee",
-        "skis", "snowboard", "sportsball", "kite", "baseballbat", "baseballglove", "skateboard", "surfboard", "tennisracket",
-        "bottle", "???", "wineglass", "cup", "fork", "knife", "spoon", "bowl", "banana", "apple", "sandwich", "orange",
-        "broccoli", "carrot", "hotdog", "pizza", "donut", "cake", "chair", "couch", "pottedplant", "bed", "???", "diningtable",
-        "???", "???", "toilet", "???", "tv", "laptop", "mouse", "remote", "keyboard", "cellphone", "microwave", "oven",
-        "toaster", "sink", "refrigerator", "???", "book", "clock", "vase", "scissors", "teddybear", "hairdrier", "toothbrush"
-};
+extern const char* const OBJECT_DETECTION_LABELS_91[91];
 
 /**
  * @brief Object Detection Result(include Face, CarPlate, Head, Object, etc...)

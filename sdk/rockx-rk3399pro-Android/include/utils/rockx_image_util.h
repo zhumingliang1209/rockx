@@ -13,11 +13,23 @@
 #ifndef _ROCKX_IMAGE_UTIL_H
 #define _ROCKX_IMAGE_UTIL_H
 
-#include "rockx_type.h"
+#include "../rockx_type.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+/**
+ * @brief Image Rotate Mode
+ */
+typedef enum {
+    ROCKX_IMAGE_TRANSFORM_NONE              = 0x00,  ///< Do not transform
+    ROCKX_IMAGE_TRANSFORM_FLIP_H            = 0x01,  ///< Flip image horizontally
+    ROCKX_IMAGE_TRANSFORM_FLIP_V            = 0x02,  ///< Flip image vertically
+    ROCKX_IMAGE_TRANSFORM_ROTATE_90         = 0x04,  ///< Rotate image 90 degree
+    ROCKX_IMAGE_TRANSFORM_ROTATE_180        = 0x03,  ///< Rotate image 180 degree
+    ROCKX_IMAGE_TRANSFORM_ROTATE_270        = 0x07,  ///< Rotate image 270 defree
+} rockx_image_transform_mode;
 
 /**
  * Get Channels of a @ref rockx_image_t
@@ -27,16 +39,20 @@ extern "C" {
 int rockx_image_get_channels(rockx_image_t *img);
 
 /**
+ * Get Bugger Size of a @ref rockx_image_t
+ * @param [in] img Image
+ * @return Buffer size
+ */
+int rockx_image_get_size(rockx_image_t *img);
+
+/**
  * Convert Image Size and Color
  * @param src [in] Source image
  * @param dst [out] Destination image
- * @param dst_width [in] Destination Width
- * @param dst_heigh [in] Destination Height
- * @param dst_pixel_format [in] Destination image format
+ * @param mode [in] transform mode
  * @return @ref rockx_ret_t
  */
-rockx_ret_t rockx_image_convert(rockx_image_t *src, rockx_image_t *dst, int dst_width, int dst_heigh,
-                                rockx_pixel_format dst_pixel_format);
+rockx_ret_t rockx_image_convert(rockx_image_t *src, rockx_image_t *dst, rockx_image_transform_mode mode);
 
 /**
  * Convert Image Size(Keep Ration) and Color
@@ -69,6 +85,14 @@ rockx_ret_t rockx_image_read(const char *img_path, rockx_image_t *image, int fla
  * @return @ref rockx_ret_t
  */
 rockx_ret_t rockx_image_write(const char *path, rockx_image_t *img);
+
+/**
+ * Write Image Raw Data To File
+ * @param path [in] File path to write
+ * @param img [in] Image to write
+ * @return @ref rockx_ret_t
+ */
+rockx_ret_t rockx_image_write_raw(const char *path, rockx_image_t *img);
 
 /**
  * Clone Image

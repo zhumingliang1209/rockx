@@ -14,8 +14,8 @@
 #define _ROCKX_OBJECT_TRACK_H
 
 #include <stddef.h>
-#include "rockx_type.h"
-#include "modules/object_detection.h"
+#include "../rockx_type.h"
+#include "object_detection.h"
 
 #ifdef __cplusplus
 extern "C" {

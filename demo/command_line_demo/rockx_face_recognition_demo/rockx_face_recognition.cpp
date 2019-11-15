@@ -20,6 +20,28 @@ rockx_handle_t face_det_handle;
 rockx_handle_t face_5landmarks_handle;
 rockx_handle_t face_recognize_handle;
 
+rockx_object_t *get_max_face(rockx_object_array_t *face_array) {
+    if (face_array->count == 0) {
+        return NULL;
+    }
+    rockx_object_t *max_face = NULL;
+    int i;
+    for (i = 0; i < face_array->count; i++) {
+        rockx_object_t *cur_face = &(face_array->object[i]);
+        if (max_face == NULL) {
+            max_face = cur_face;
+            continue;
+        }
+        int cur_face_box_area = (cur_face->box.right - cur_face->box.left) * (cur_face->box.bottom - cur_face->box.top);
+        int max_face_box_area = (max_face->box.right - max_face->box.left) * (max_face->box.bottom - max_face->box.top);
+        if (cur_face_box_area > max_face_box_area) {
+            max_face = cur_face;
+        }
+    }
+    printf("get_max_face %d\n", i-1);
+    return max_face;
+}
+
 int run_face_recognize(rockx_image_t *in_image, rockx_face_feature_t *out_feature) {
     rockx_ret_t ret;
 
@@ -42,30 +64,29 @@ int run_face_recognize(rockx_image_t *in_image, rockx_face_feature_t *out_featur
         int right = face_array.object[i].box.right;
         int bottom = face_array.object[i].box.bottom;
         float score = face_array.object[i].score;
-        printf("box=(%d %d %d %d) score=%f\n", left, top, right, bottom, score);
-        // draw
-        char score_str[8];
-        memset(score_str, 0, 8);
-        snprintf(score_str, 8, "%.3f", score);
+        printf("%d box=(%d %d %d %d) score=%f\n", i, left, top, right, bottom, score);
     }
 
-    /*************** FACE Landmark ***************/
+    // Get max face
+    rockx_object_t* max_face = get_max_face(&face_array);
+    if (max_face == NULL) {
+        printf("error no face detected\n");
+        return -1;
+    }
+
+    // Face Align
     rockx_image_t out_img;
-    out_img.width = 112;
-    out_img.height = 112;
-    out_img.pixel_format = ROCKX_PIXEL_FORMAT_RGB888;
-    out_img.data = (uint8_t*)malloc(112*112*3*sizeof(char));
-    for (int i = 0; i < face_array.count; i++) {
-        rockx_face_align(face_5landmarks_handle, in_image, &face_array.object[i].box, nullptr, &out_img);
+    memset(&out_img, 0, sizeof(rockx_image_t));
+    ret = rockx_face_align(face_5landmarks_handle, in_image, &(max_face->box), nullptr, &out_img);
+    if (ret != ROCKX_RET_SUCCESS) {
+        return -1;
     }
 
-    /*************** FACE Recognize ***************/
+    // Face Recognition
     rockx_face_recognize(face_recognize_handle, &out_img, out_feature);
 
-    //printf("out_feature0 is %f \n",out_feature[n-1].feature[0]);
-    //printf("out_feature1 is %f \n",out_feature[n-1].feature[1]);
-
-    free(out_img.data);
+    // Release Aligned Image
+    rockx_image_release(&out_img);
 
     return 0;
 }
@@ -103,6 +124,9 @@ int main(int argc, char** argv) {
 
     rockx_face_feature_t out_feature1;
     rockx_face_feature_t out_feature2;
+
+    memset(&out_feature1, 0, sizeof(rockx_face_feature_t));
+    memset(&out_feature2, 0, sizeof(rockx_face_feature_t));
 
     // read image
     const char *img_path1 = argv[1];

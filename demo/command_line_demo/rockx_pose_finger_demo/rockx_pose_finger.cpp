@@ -24,6 +24,11 @@ int main(int argc, char** argv) {
     rockx_handle_t pose_finger_handle;
     struct timeval tv;
 
+    if (argc < 3) {
+        printf("Use ./rockx_pose_finger book.jpg 3 or ./rockx_face_landmark hand_368x368.jpg 21\n");
+        return -1;
+    }
+
     const char *img_path = argv[1];
     int keypoint_num = atoi(argv[2]);
 
